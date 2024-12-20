@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from app.config.config import Config, JWTConfig
 from flask_jwt_extended import JWTManager
+from app.routes.auth_routes import auth_routes
 from app.routes.home_routes import home_routes
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -27,6 +28,7 @@ swagger_blueprint = get_swaggerui_blueprint(
 
 app.register_blueprint(swagger_blueprint, url_prefix = swagger_url)
 
+app.register_blueprint(auth_routes)
 app.register_blueprint(home_routes)
 
 if __name__ == '__main__':
