@@ -18,7 +18,7 @@ def get_banner():
     response = {"banners": banners_data}
     return jsonify(response), 200
 
-def articles():
+def get_articles():
     # query Parameters untuk pagination 
     size = request.args.get('size', type=int)
     page = request.args.get('page', type=int)
@@ -53,4 +53,20 @@ def articles():
         "articles": article_data
     }
 
+    return jsonify(response), 200
+
+def get_store():
+    # Query ke Firestore untuk mendapatkan data banner
+    store_ref = db.collection('store')
+    results = store_ref.stream()
+
+    # list untuk menyimpan data banner
+    stores_data = []
+
+    for result in results:
+        store_data = result.to_dict()
+        stores_data.append(store_data)
+
+    # return response json  
+    response = {"stores": stores_data}
     return jsonify(response), 200
