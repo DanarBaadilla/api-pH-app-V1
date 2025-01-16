@@ -24,7 +24,6 @@ def register_guest():
 
     # Respons JSON tanpa field 'createdAt'
     response_data = {
-        'userId': user_firestore_data['userId'],
         'token': user_firestore_data['token']
     }
 
