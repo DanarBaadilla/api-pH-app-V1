@@ -1,0 +1,785 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "pH App RESTful API with Flask",
+    "version": "1.0.0",
+    "title": "pH APP API",
+    "license": {
+      "name": "ph APP",
+      "url": "https://"
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Guest Register Authorization"
+    },
+    {
+      "name": "Home",
+      "description": "Access to Home Page Content"
+    },
+    {
+      "name": "Tutorials",
+      "description": "Access to tutorials"
+    },
+    {
+      "name": "Predict",
+      "description": "Access to predict feature"
+    },
+    {
+      "name": "History",
+      "description": "Access to Guest History"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a guest user",
+        "description": "Registers a guest user and generates a unique token.",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/registerResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/banners": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Get list of banners",
+        "description": "Retrieve a list of banners available for the home page.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of banners",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BannersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Get list of stores",
+        "description": "Retrieve a list of stores available.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of stores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoresResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Get list of articles",
+        "description": "Retrieve a list of articles with pagination.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 3
+            },
+            "description": "Number of articles per page"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Page number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of articles with pagination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticlesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "tags": ["History"],
+        "summary": "Get all history",
+        "description": "Fetch all history for the user",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of user history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/{historyId}": {
+      "get": {
+        "tags": ["History"],
+        "summary": "Get detail history",
+        "description": "Fetch the details of a specific history record by its ID",
+        "parameters": [
+          {
+            "name": "historyId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the history record to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A detailed history record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "History record not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "History record not found!."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["History"],
+        "summary": "Update history data for a specific entry",
+        "parameters": [
+          {
+            "name": "historyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "namaLarutan": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": " update successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Update Successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "History record not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "History record not found!."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid or missing authorization token."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["History"],
+        "summary": "Delete a specific history entry",
+        "parameters": [
+          {
+            "name": "historyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the history to be deleted"
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "History deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "History with ID 38Jnb44v99pT9W9d0bcy has been deleted."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "History not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "History not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Failed to delete history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to delete history"
+                    },
+                    "details": {
+                      "type": "string",
+                      "example": "Detailed error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "registerResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NzM4ZjE5ZC1mZTIyLTQxYzUtODk4My0zYjcxOWExNWU3MjAiLCJleHAiOjE3Njg1NjM5MzN9.p3oM84bUCXDLCe0nQSpU8D0k_6GA4V1D4NPRjKSDOQ4"
+          }
+        },
+        "description": "Response schema for the register endpoint"
+      },
+      "Banner": {
+        "type": "object",
+        "properties": {
+          "bannerId": {
+            "type": "string",
+            "example": "B001"
+          },
+          "judulBanner": {
+            "type": "string",
+            "example": "Penting nya pH"
+          },
+          "teksBanner": {
+            "type": "string",
+            "example": "example example example"
+          },
+          "urlBanner": {
+            "type": "string",
+            "example": "examplebanner.com"
+          }
+        }
+      },
+      "BannersResponse": {
+        "type": "object",
+        "properties": {
+          "banners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Banner"
+            }
+          }
+        }
+      },
+      "Store": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string",
+            "example": "S01"
+          },
+          "urlGambarToko": {
+            "type": "string",
+            "example": "asdasdassa"
+          },
+          "urlToko": {
+            "type": "string",
+            "example": "asdada"
+          }
+        }
+      },
+      "StoresResponse": {
+        "type": "object",
+        "properties": {
+          "stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Store"
+            }
+          }
+        }
+      },
+      "Article": {
+        "type": "object",
+        "properties": {
+          "articleId": {
+            "type": "string",
+            "example": "A01"
+          },
+          "judulArtikel": {
+            "type": "string",
+            "example": "asjdjasd"
+          },
+          "teksArtikel": {
+            "type": "string",
+            "example": "asdasvascvas"
+          },
+          "urlArtikel": {
+            "type": "string",
+            "example": "asdasdasdas"
+          },
+          "urlGambarArtikel": {
+            "type": "string",
+            "example": "adasdsas"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "example": 1
+          },
+          "data_per_page": {
+            "type": "integer",
+            "example": 3
+          },
+          "total_data": {
+            "type": "integer",
+            "example": 4
+          },
+          "total_pages": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "ArticlesResponse": {
+        "type": "object",
+        "properties": {
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "HistoryItem": {
+        "type": "object",
+        "properties": {
+          "historyId": {
+            "type": "string",
+            "example": "38Jnb44v99pT9W9d0bcy"
+          },
+          "namaLarutan": {
+            "type": "string",
+            "example": "larutan buffer"
+          },
+          "ph": {
+            "type": "integer",
+            "example": 2
+          },
+          "tanggal": {
+            "type": "string",
+            "example": "16/1/2025"
+          }
+        },
+        "required": ["historyId", "namaLarutan", "ph", "tanggal"]
+      },
+      "HistoryResponse": {
+        "type": "object",
+        "properties": {
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryItem"
+            }
+          }
+        },
+        "required": ["history"]
+      },
+      "HistoryDetailResponse": {
+        "type": "object",
+        "properties": {
+          "historyId": {
+            "type": "string",
+            "example": "h001"
+          },
+          "namaLarutan": {
+            "type": "string",
+            "example": "larutan buffer"
+          },
+          "ph": {
+            "type": "integer",
+            "example": 2
+          },
+          "tanggal": {
+            "type": "string",
+            "example": "16/1/2025"
+          },
+          "urlGambar": {
+            "type": "string",
+            "example": "example.com"
+          },
+          "deskripsi": {
+            "type": "string",
+            "example": "larutan yang sudah diketahui pH nya"
+          }
+        },
+        "required": [
+          "historyId",
+          "namaLarutan",
+          "ph",
+          "tanggal",
+          "urlGambar",
+          "deskripsi"
+        ]
+      }
+    }
+  }
+}
