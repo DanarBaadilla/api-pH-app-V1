@@ -56,11 +56,11 @@ def get_articles():
     return jsonify(response), 200
 
 def get_store():
-    # Query ke Firestore untuk mendapatkan data banner
+    # Query ke Firestore untuk mendapatkan data store
     store_ref = db.collection('store')
     results = store_ref.stream()
 
-    # list untuk menyimpan data banner
+    # list untuk menyimpan data store
     stores_data = []
 
     for result in results:

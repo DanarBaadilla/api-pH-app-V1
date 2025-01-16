@@ -2,11 +2,11 @@ from flask import jsonify
 from app.config.config import db
 
 def get_tutorial():
-    # Query ke Firestore untuk mendapatkan data banner
+    # Query ke Firestore untuk mendapatkan data tutorial
     tutorial_ref = db.collection('tutorials')
     results = tutorial_ref.stream()
 
-    # list untuk menyimpan data banner
+    # list untuk menyimpan data tutorial
     tutorials_data = []
 
     for result in results:
