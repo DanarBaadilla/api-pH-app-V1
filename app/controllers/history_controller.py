@@ -66,10 +66,17 @@ def update_history(historyId):
 
         # Data baru dari request body
         data = request.get_json()
-        updated_data = {
-            "namaLarutan": data.get("namaLarutan"),
-            "deskripsi": data.get("deskripsi")
-        }
+        
+        # Dictionary kosong untuk data yang akan diupdate
+        updated_data = {}
+
+        # Cek apakah namaLarutan ada di request body
+        if "namaLarutan" in data:
+            updated_data["namaLarutan"] = data["namaLarutan"]
+
+        # Cek apakah deskripsi ada di request body
+        if "deskripsi" in data:
+            updated_data["deskripsi"] = data["deskripsi"]
 
         # Referensi dokumen history berdasarkan historyId
         history_ref = db.collection('user').document(userId).collection('history').document(historyId)
@@ -79,18 +86,18 @@ def update_history(historyId):
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 
-        # Update dokumen
-        history_ref.update(updated_data)
+        # Update dokumen jika ada dengan data yang akan diupdate
+        if updated_data:
+            history_ref.update(updated_data)
 
-        # Kembalikan data yang diperbarui
-        updated_doc = history_ref.get()
-        return jsonify(updated_doc.to_dict()), 200
+        # response update berhasil
+        return jsonify({"message": "Update Successful."}), 200
 
     except Exception as e:
         return jsonify({"error": "Failed to update history", "details": str(e)}), 500
 
 
-@jwt_required()
+
 def delete_history(historyId):
     try:
         # Ekstrak userId dari token JWT
