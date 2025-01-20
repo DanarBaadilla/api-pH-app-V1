@@ -13,12 +13,14 @@ def predict():
         userId = get_jwt_identity()
 
         # Validasi request body
-        if 'name' not in request.form or 'description' not in request.form or 'image' not in request.files:
-            return jsonify({"error": "Invalid input. 'name', 'description', and 'image' are required."}), 400
+        if 'name' not in request.form or 'image' not in request.files:
+            return jsonify({"error": "Invalid input. 'name' and 'image' are required."}), 400
 
         name = request.form['name']
-        description = request.form['description']
         image_file = request.files['image']
+
+        # Ambil description jika ada, atau atur ke None
+        description = request.form.get('description', None)
 
         # Validasi tipe file
         if not image_file.mimetype in ['image/jpeg', 'image/png']:
@@ -45,7 +47,7 @@ def predict():
         # Simpan data ke database
         history_ref.document(history_id).set({
             "name": name,
-            "description": description,
+            "description": description,  # Nilai description bisa None
             "historyId": history_id,
             "pH": predicted_ph,
             "timestamp": datetime.now().strftime("%d/%m/%Y")
@@ -54,7 +56,7 @@ def predict():
         # Respons
         response = {
             "name": name,
-            "description": description,
+            "description": description,  # Kembalikan description, bisa None atau nilai input user
             "historyId": history_id,
             "pH": predicted_ph,
             "timestamp": datetime.now().strftime("%d/%m/%Y")
