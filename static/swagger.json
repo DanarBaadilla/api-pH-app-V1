@@ -257,6 +257,61 @@
         }
       }
     },
+    "/predict": {
+      "post": {
+        "tags": ["Predict"],
+        "summary": "Predict the pH Value from the liquid",
+        "description": "This Endpoint do image segmentation and predict pH usung CNN",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Predict successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request (Wrong input from the user)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "An error occurred while processing the request."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/history": {
       "get": {
         "tags": ["History"],
@@ -779,6 +834,68 @@
           "urlGambar",
           "deskripsi"
         ]
+      },
+      "PredictRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "solution / liquid name.",
+            "example": "larutan b-r robinson"
+          },
+          "description": {
+            "type": "string",
+            "description": "optional description.",
+            "example": "larutan untuk membuat buffer"
+          },
+          "image": {
+            "type": "string",
+            "format": "file",
+            "description": "only .JPG, .JPEG, and .PNG supported."
+          }
+        },
+        "required": ["name", "image"]
+      },
+      "PredictResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "solution / liquid name.",
+            "example": "larutan b-R robinson"
+          },
+          "description": {
+            "type": "string",
+            "description": "solution / liquid description (null if there is no input).",
+            "example": "larutan untuk membuat buffer"
+          },
+          "historyId": {
+            "type": "string",
+            "description": "Predict UID.",
+            "example": "h010"
+          },
+          "pH": {
+            "type": "string",
+            "description": "pH Value.",
+            "example": "9"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date",
+            "description": "date of prediction.",
+            "example": "20/01/2025"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "error handling.",
+            "example": "Invalid file type. Only JPG, JPEG, and PNG are allowed."
+          }
+        }
       }
     }
   }
