@@ -1,14 +1,11 @@
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
-from uuid import uuid4
-from google.cloud import storage
 from app.config.config import db
 from datetime import datetime
-
-# Inisialisasi Cloud Storage
-storage_client = storage.Client()
-bucket_name = "your-cloud-storage-bucket-name"
-bucket = storage_client.bucket(bucket_name)
+from app.models.LiquidSegmentation import segment_image
+from app.models.pH_Classification import classify_ph
+import cv2
+import numpy as np
 
 def predict():
     try:
@@ -27,33 +24,40 @@ def predict():
         if not image_file.mimetype in ['image/jpeg', 'image/png']:
             return jsonify({"error": "Invalid file type. Only JPG, JPEG, and PNG are allowed."}), 400
 
-        # Generate unique file name untuk diunggah
-        file_extension = image_file.filename.rsplit('.', 1)[-1].lower()
-        unique_filename = f"{uuid4()}.{file_extension}"
+        # Load image into numpy array
+        np_img = np.frombuffer(image_file.read(), np.uint8)
+        image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
-        # Unggah gambar ke Cloud Storage
-        blob = bucket.blob(f"history/{userId}/{unique_filename}")
-        blob.upload_from_file(image_file, content_type=image_file.mimetype)
-        blob.make_public()
+        # Segmentasi gambar
+        segmented_image = segment_image(image)
+        if segmented_image is None:
+            return jsonify({"error": "Segmentation failed or no liquid detected."}), 400
 
-        # URL gambar di Cloud Storage
-        image_url = blob.public_url
+        # Klasifikasi nilai pH
+        predicted_ph = classify_ph(segmented_image)
 
-        # Simpan data ke subcollection 'history'
+        # Generate unique history ID
         user_ref = db.collection('user').document(userId)
         history_ref = user_ref.collection('history')
-        history_ref.add({
+        history_count = len(history_ref.get())
+        history_id = f"h{history_count + 1:03d}"
+
+        # Simpan data ke database
+        history_ref.document(history_id).set({
             "name": name,
             "description": description,
-            "image_url": image_url,
-            "timestamp": datetime.now()
+            "historyId": history_id,
+            "pH": predicted_ph,
+            "timestamp": datetime.now().strftime("%d/%m/%Y")
         })
 
         # Respons
         response = {
             "name": name,
             "description": description,
-            "image_url": image_url
+            "historyId": history_id,
+            "pH": predicted_ph,
+            "timestamp": datetime.now().strftime("%d/%m/%Y")
         }
         return jsonify(response), 201
 
