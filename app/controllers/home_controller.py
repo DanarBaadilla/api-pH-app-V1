@@ -3,70 +3,93 @@ from app.config.config import db
 import math
 
 def get_banner():
-    # Query ke Firestore untuk mendapatkan data banner
-    banners_ref = db.collection('banners')
-    results = banners_ref.stream()
+    try:
+        # Query ke Firestore untuk mendapatkan data banner
+        banners_ref = db.collection('banners')
+        results = banners_ref.stream()
 
-    # list untuk menyimpan data banner
-    banners_data = []
+        # List untuk menyimpan data banner
+        banners_data = []
 
-    for result in results:
-        banner_data = result.to_dict()
-        banners_data.append(banner_data)
+        for result in results:
+            banner_data = result.to_dict()
+            banners_data.append(banner_data)
 
-    # return response json  
-    response = {"banners": banners_data}
-    return jsonify(response), 200
+        # Return response JSON  
+        response = {"banners": banners_data}
+        return jsonify(response), 200
+
+    except Exception as e:
+        # Return error message jika terjadi kesalahan
+        return jsonify({"error": str(e)}), 500
 
 def get_articles():
-    # query Parameters untuk pagination 
-    size = request.args.get('size', type=int)
-    page = request.args.get('page', type=int)
+    try:
+        # Query Parameters untuk pagination 
+        size = request.args.get('size', type=int)
+        page = request.args.get('page', type=int)
 
-    # query ke firestore untuk mendapatkan data article
-    articles_ref = db.collection('articles')
+        # Validasi query parameters
+        if size is None or page is None or size <= 0 or page <= 0:
+            return jsonify({"error": "Invalid query parameters. 'size' and 'page' must be positive integers."}), 400
 
-    # Hitung total data
-    total_data = len(list(articles_ref.stream()))
+        # Query ke Firestore untuk mendapatkan data article
+        articles_ref = db.collection('articles')
 
-    # Hitung total halaman
-    total_pages = math.ceil(total_data / size)
+        # Hitung total data
+        total_data = len(list(articles_ref.stream()))
 
-    # Query untuk halaman tertentu
-    query = articles_ref.limit(size).offset((page - 1) * size)
-    results = query.stream()
+        # Hitung total halaman
+        total_pages = math.ceil(total_data / size)
 
-    # list untuk menyimpan data article 
-    article_data = []
-    for result in results:
-        article_info = result.to_dict()
-        article_data.append(article_info)
+        # Validasi halaman
+        if page > total_pages:
+            return jsonify({"error": f"Page {page} exceeds total pages {total_pages}."}), 400
 
-    #return response
-    response = {
-        "meta": {
-            "total_data": total_data,
-            "total_pages": total_pages,
-            "current_page": page,
-            "data_per_page": size
-        },
-        "articles": article_data
-    }
+        # Query untuk halaman tertentu
+        query = articles_ref.limit(size).offset((page - 1) * size)
+        results = query.stream()
 
-    return jsonify(response), 200
+        # List untuk menyimpan data article 
+        article_data = []
+        for result in results:
+            article_info = result.to_dict()
+            article_data.append(article_info)
+
+        # Return response
+        response = {
+            "meta": {
+                "total_data": total_data,
+                "total_pages": total_pages,
+                "current_page": page,
+                "data_per_page": size
+            },
+            "articles": article_data
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        # Return error message jika terjadi kesalahan
+        return jsonify({"error": str(e)}), 500
 
 def get_store():
-    # Query ke Firestore untuk mendapatkan data store
-    store_ref = db.collection('store')
-    results = store_ref.stream()
+    try:
+        # Query ke Firestore untuk mendapatkan data store
+        store_ref = db.collection('store')
+        results = store_ref.stream()
 
-    # list untuk menyimpan data store
-    stores_data = []
+        # List untuk menyimpan data store
+        stores_data = []
 
-    for result in results:
-        store_data = result.to_dict()
-        stores_data.append(store_data)
+        for result in results:
+            store_data = result.to_dict()
+            stores_data.append(store_data)
 
-    # return response json  
-    response = {"stores": stores_data}
-    return jsonify(response), 200
+        # Return response JSON  
+        response = {"stores": stores_data}
+        return jsonify(response), 200
+
+    except Exception as e:
+        # Return error message jika terjadi kesalahan
+        return jsonify({"error": str(e)}), 500
