@@ -257,11 +257,128 @@
         }
       }
     },
+    "/extract": {
+      "get": {
+        "tags": ["Tutorials"],
+        "summary": "Get tutorial steps for extracting butterfly pea flowers.",
+        "description": "Retrieve a list of steps for extracting butterfly pea flowers, including IDs, titles, descriptions, and image URLs.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of extraction steps.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtractResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseExtract"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mix": {
+      "get": {
+        "tags": ["Tutorials"],
+        "summary": "Get tutorial steps for mixing solutions.",
+        "description": "Retrieve a list of steps for mixing solutions, including IDs, titles, descriptions, and image URLs.",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of mixing steps.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MixProcedureResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseMix"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video": {
+      "get": {
+        "tags": ["Tutorials"],
+        "summary": "Get the tutorial video URL.",
+        "description": "Retrieve the URL for the tutorial video",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The URL of the tutorial video.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No video data found or 'urlVideo' field is missing.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseVideo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/predict": {
       "post": {
         "tags": ["Predict"],
         "summary": "Predict the pH Value from the liquid",
         "description": "This Endpoint do image segmentation and predict pH usung CNN",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -894,6 +1011,123 @@
             "type": "string",
             "description": "error handling.",
             "example": "Invalid file type. Only JPG, JPEG, and PNG are allowed."
+          }
+        }
+      },
+      "ExtractItem": {
+        "type": "object",
+        "properties": {
+          "ekstrakId": {
+            "type": "string",
+            "description": "ID unik untuk langkah ekstrak.",
+            "example": "e001"
+          },
+          "judul": {
+            "type": "string",
+            "description": "Judul langkah ekstrak.",
+            "example": "Siapkan Bunga Telang"
+          },
+          "teks": {
+            "type": "string",
+            "description": "Deskripsi langkah ekstrak.",
+            "example": "Masukkan 6 bunga segar atau 7 bunga kering ke dalam wadah"
+          },
+          "urlGambar": {
+            "type": "string",
+            "description": "URL gambar ilustrasi langkah.",
+            "example": "www.com"
+          }
+        },
+        "required": ["ekstrakId", "judul", "teks", "urlGambar"]
+      },
+      "ExtractResponse": {
+        "type": "object",
+        "properties": {
+          "extract": {
+            "type": "array",
+            "description": "Daftar langkah-langkah untuk ekstraksi bunga telang.",
+            "items": {
+              "$ref": "#/components/schemas/ExtractItem"
+            }
+          }
+        }
+      },
+      "ErrorResponseExtract": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "error response.",
+            "example": "An error occurred while processing the request."
+          }
+        }
+      },
+      "MixProcedureItem": {
+        "type": "object",
+        "properties": {
+          "mixId": {
+            "type": "string",
+            "description": "ID unik untuk langkah campuran.",
+            "example": "m001"
+          },
+          "judul": {
+            "type": "string",
+            "description": "Judul langkah campuran.",
+            "example": "Siapkan Larutan Uji"
+          },
+          "teks": {
+            "type": "string",
+            "description": "Deskripsi langkah campuran.",
+            "example": "Tuangkan 2 sendok makan (14 ml) larutan uji ke dalam gelas."
+          },
+          "urlGambar": {
+            "type": "string",
+            "description": "URL gambar ilustrasi langkah.",
+            "example": "www.com"
+          }
+        },
+        "required": ["mixId", "judul", "teks", "urlGambar"]
+      },
+      "MixProcedureResponse": {
+        "type": "object",
+        "properties": {
+          "mixProcedure": {
+            "type": "array",
+            "description": "Daftar langkah-langkah untuk mencampur larutan.",
+            "items": {
+              "$ref": "#/components/schemas/MixProcedureItem"
+            }
+          }
+        }
+      },
+      "ErrorResponseMix": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Pesan kesalahan yang terjadi.",
+            "example": "An error occurred while processing the request."
+          }
+        }
+      },
+      "VideoResponse": {
+        "type": "object",
+        "properties": {
+          "urlVideo": {
+            "type": "string",
+            "description": "URL dari video tutorial.",
+            "example": "www.com"
+          }
+        },
+        "required": ["urlVideo"]
+      },
+      "ErrorResponseVideo": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Pesan kesalahan yang terjadi.",
+            "example": "No video data found or 'urlVideo' missing."
           }
         }
       }
