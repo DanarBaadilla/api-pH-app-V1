@@ -22,7 +22,7 @@ def get_history():
             # Pilih hanya field yang diperlukan
             filtered_data = {
                 'historyId': history_data.get('historyId'),
-                'namaLarutan': history_data.get('namaLarutan'),
+                'name': history_data.get('name'),
                 'tanggal': history_data.get('tanggal'),
                 'ph': history_data.get('ph'),
             }
@@ -70,13 +70,13 @@ def update_history(historyId):
         # Dictionary kosong untuk data yang akan diupdate
         updated_data = {}
 
-        # Cek apakah namaLarutan ada di request body
-        if "namaLarutan" in data:
-            updated_data["namaLarutan"] = data["namaLarutan"]
+        # Cek apakah name ada di request body
+        if "name" in data:
+            updated_data["name"] = data["name"]
 
-        # Cek apakah deskripsi ada di request body
-        if "deskripsi" in data:
-            updated_data["deskripsi"] = data["deskripsi"]
+        # Cek apakah description ada di request body
+        if "description" in data:
+            updated_data["description"] = data["description"]
 
         # Referensi dokumen history berdasarkan historyId
         history_ref = db.collection('user').document(userId).collection('history').document(historyId)
