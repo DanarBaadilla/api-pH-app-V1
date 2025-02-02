@@ -10,22 +10,14 @@ from google.cloud import storage
 import uuid
 import os
 from google.oauth2 import service_account
+from app.config.config import GCS_BUCKET_NAME, GCS_BASE_URL, storage_client
 
-# Konfigurasi Google Cloud Storage
-GCS_BUCKET_NAME = "ph-app-v1-bucket"  # Ganti dengan nama bucket Anda
-GCS_BASE_URL = f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/"
-
-# Menentukan path absolut ke file kredensial
-KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "config", "gcsKey.json")
 
 def upload_image_to_gcs(image_data, filename, content_type):
     """Mengunggah file ke Google Cloud Storage dan mengembalikan URL publiknya."""
     try:
-        # Membaca kredensial dari file dan membuat client Storage
-        credentials = service_account.Credentials.from_service_account_file(KEY_PATH)
 
         # Inisialisasi klien GCS dengan kredensial
-        storage_client = storage.Client(credentials=credentials, project=credentials.project_id)
         bucket = storage_client.bucket(GCS_BUCKET_NAME)
         blob = bucket.blob(filename)
 

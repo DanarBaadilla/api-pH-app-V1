@@ -1,6 +1,7 @@
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 from app.config.config import db
+from app.config.config import storage_client, GCS_BUCKET_NAME
 
 def get_history():
     try:
@@ -24,7 +25,7 @@ def get_history():
                 'historyId': history_data.get('historyId'),
                 'name': history_data.get('name'),
                 'tanggal': history_data.get('tanggal'),
-                'ph': history_data.get('ph'),
+                'pH': history_data.get('pH'),
             }
             history_list.append(filtered_data)
 
@@ -98,6 +99,7 @@ def update_history(historyId):
 
 
 
+
 def delete_history(historyId):
     try:
         # Ekstrak userId dari token JWT
@@ -111,10 +113,30 @@ def delete_history(historyId):
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 
-        # Hapus dokumen
+        # Ambil URL gambar dari Firestore
+        history_data = history_doc.to_dict()
+        name = history_data.get("name", "Unknown")  # Ambil name, default 'Unknown' jika tidak ada
+        image_url = history_data.get("urlGambar")
+
+        # Hapus gambar dari Google Cloud Storage jika ada URL gambar
+        if image_url:
+            try:
+                # Ekstrak nama file dari URL (setelah bucket name)
+                filename = image_url.split(f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/")[-1]
+
+                # Inisialisasi bucket dan hapus file
+                bucket = storage_client.bucket(GCS_BUCKET_NAME)
+                blob = bucket.blob(filename)    
+                blob.delete()
+
+                print(f"Gambar {filename} telah dihapus dari GCS.")
+            except Exception as e:
+                print(f"Gagal menghapus gambar dari GCS: {str(e)}")
+
+        # Hapus dokumen dari Firestore
         history_ref.delete()
 
-        return jsonify({"message": f"History with ID {historyId} has been deleted."}), 200
+        return jsonify({"message": f"History with name '{name}' has been deleted."}), 200
 
     except Exception as e:
         return jsonify({"error": "Failed to delete history", "details": str(e)}), 500
