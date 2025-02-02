@@ -20,7 +20,6 @@ def get_banner():
         return jsonify(response), 200
 
     except Exception as e:
-        # Return error message jika terjadi kesalahan
         return jsonify({"error": str(e)}), 500
 
 def get_articles():

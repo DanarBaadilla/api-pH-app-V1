@@ -15,12 +15,12 @@ def get_history():
         # Ambil semua dokumen dari subcollection 'history'
         history_docs = history_ref.stream()
 
-        # Simpan hasil dalam bentuk list dengan filter field yang diinginkan
+        # Simpan hasil dalam bentuk list
         history_list = []
         for doc in history_docs:
             history_data = doc.to_dict()
             
-            # Pilih hanya field yang diperlukan
+            # field yang diperlukan
             filtered_data = {
                 'historyId': history_data.get('historyId'),
                 'name': history_data.get('name'),
@@ -29,13 +29,14 @@ def get_history():
             }
             history_list.append(filtered_data)
 
-        # Jika tidak ada history, kembalikan respons kosong
+        # Jika tidak ada history, kembalikan respons 404
         if not history_list:
             return jsonify({"message": "No history found."}), 404
 
         # Kembalikan respons dengan data history
         return jsonify({"history": history_list}), 200
-
+    
+    # kembalikan respon untuk kode 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -49,11 +50,11 @@ def get_detail_history(historyId):
         history_ref = db.collection('user').document(userId).collection('history').document(historyId)
         history_doc = history_ref.get()
 
-        # Cek apakah dokumen ada
+        # Respon kode 404 jika dokumen tidak tersedia
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 
-        # Kembalikan detail dokumen
+        # Respon detail dokumen
         return jsonify(history_doc.to_dict()), 200
 
     except Exception as e:
@@ -83,7 +84,7 @@ def update_history(historyId):
         history_ref = db.collection('user').document(userId).collection('history').document(historyId)
         history_doc = history_ref.get()
 
-        # Cek apakah dokumen ada
+        # Respon 404 jika dokumen tidak ditemukan
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 
@@ -109,7 +110,7 @@ def delete_history(historyId):
         history_ref = db.collection('user').document(userId).collection('history').document(historyId)
         history_doc = history_ref.get()
 
-        # Cek apakah dokumen ada
+        # Respon 404 jika dokumen tidak ditemukan
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 

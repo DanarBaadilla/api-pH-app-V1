@@ -1,22 +1,18 @@
+import cv2
+import uuid
+import numpy as np
+from datetime import datetime
+from app.config.config import db
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
-from app.config.config import db
-from datetime import datetime
 from app.models.LiquidSegmentation import segment_image
 from app.models.pH_Classification import classify_ph
-import cv2
-import numpy as np
-from google.cloud import storage
-import uuid
-import os
-from google.oauth2 import service_account
 from app.config.config import GCS_BUCKET_NAME, GCS_BASE_URL, storage_client
 
 
 def upload_image_to_gcs(image_data, filename, content_type):
     """Mengunggah file ke Google Cloud Storage dan mengembalikan URL publiknya."""
     try:
-
         # Inisialisasi klien GCS dengan kredensial
         bucket = storage_client.bucket(GCS_BUCKET_NAME)
         blob = bucket.blob(filename)
@@ -29,6 +25,7 @@ def upload_image_to_gcs(image_data, filename, content_type):
 
         # Mengembalikan URL gambar yang diunggah
         return GCS_BASE_URL + filename
+    
     except Exception as e:
         raise Exception(f"Gagal mengunggah gambar ke GCS: {str(e)}")
 
@@ -51,7 +48,7 @@ def predict():
         if not image_file.mimetype in ['image/jpeg', 'image/png']:
             return jsonify({"error": "Invalid file type. Only JPG, JPEG, and PNG are allowed."}), 400
 
-        # Baca data binari gambar agar bisa digunakan dua kali
+        # Baca data gambar
         image_data = image_file.read()
 
         # Generate nama file unik dalam folder user di GCS

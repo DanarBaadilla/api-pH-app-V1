@@ -22,7 +22,7 @@ def register_guest():
     user_ref = db.collection('user').document(userId)
     user_ref.set(user_firestore_data)
 
-    # Respons JSON tanpa field 'createdAt'
+    # Respons JSON tanpa field 'createdAt' & 'userId'
     response_data = {
         'token': user_firestore_data['token']
     }
