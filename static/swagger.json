@@ -1036,7 +1036,7 @@
             "description": "pH Value.",
             "example": "9"
           },
-          "timestamp": {
+          "tanggal": {
             "type": "string",
             "format": "date",
             "description": "date of prediction.",
