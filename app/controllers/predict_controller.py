@@ -99,3 +99,23 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def get_example_photo():
+    try:
+        # Query ke Firestore untuk mendapatkan data contoh foto
+        photo_ref = db.collection('tutorials').document('f!xTutorials').collection('exPhoto')
+        results = photo_ref.stream()
+
+        # List untuk menyimpan data foto
+        photos_data = []
+
+        for result in results:
+            photo_data = result.to_dict()
+            photos_data.append(photo_data)
+
+        # Return response JSON  
+        response = {"photos": photos_data}
+        return jsonify(response), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
