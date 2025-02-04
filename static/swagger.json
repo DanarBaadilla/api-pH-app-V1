@@ -429,6 +429,46 @@
         }
       }
     },
+    "/photo": {
+      "get": {
+        "tags": ["Predict"],
+        "summary": "Get list of photos",
+        "description": "Retrieve a list of photos. Requires Bearer Token authentication.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/history": {
       "get": {
         "tags": ["History"],
@@ -1128,6 +1168,30 @@
             "type": "string",
             "description": "Pesan kesalahan yang terjadi.",
             "example": "No video data found or 'urlVideo' missing."
+          }
+        }
+      },
+      "Photo": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "example": "p001"
+          },
+          "urlPhoto": {
+            "type": "string",
+            "example": "www.com"
+          }
+        }
+      },
+      "PhotoResponse": {
+        "type": "object",
+        "properties": {
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Photo"
+            }
           }
         }
       }
