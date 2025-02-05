@@ -32,7 +32,7 @@
     }
   ],
   "paths": {
-    "/register": {
+    "/registerGuest": {
       "post": {
         "tags": ["Auth"],
         "summary": "Register a guest user",
