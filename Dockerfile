@@ -21,5 +21,8 @@ COPY . ./
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
+# Pre-download the ResNet101 model so it's cached in the image
+RUN python -c "import torchvision.models as models; models.resnet101(pretrained=True)"
+
 # Run the web service on container startup using gunicorn
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
