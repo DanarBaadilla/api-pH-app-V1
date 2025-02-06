@@ -9,17 +9,17 @@ import cv2
 # Path model PSPNet
 Trained_model_path = "app/models/TrainedModel/PSPNet_Semantic_Segmentation.torch"
 
-# Inisialisasi model PSPNet
-UseGPU = False  # Gunakan CPU secara default
 FreezeBatchNormStatistics = True  # Freeze statistik batch normalisasi untuk inferensi
 
+# Inisialisasi model PSPNet
+# Pertama, buat instance dari arsitektur model
 Net = PSPNet.Net(CatDic.CatNum)
-if UseGPU:
-    print("USING GPU")
-    Net.load_state_dict(torch.load(Trained_model_path))
-else:
-    print("USING CPU")
-    Net.load_state_dict(torch.load(Trained_model_path, map_location=torch.device("cpu")))
+
+# Kemudian, load state dict dari file .pt ke dalam model
+state_dict = torch.load(Trained_model_path, map_location=torch.device('cpu'))
+
+Net.load_state_dict(state_dict)
+Net.eval()  # Set model ke mode evaluasi
 
 # Fungsi untuk mendapatkan mask terbesar
 def get_largest_mask(mask):
@@ -45,11 +45,9 @@ def segment_image(image):
         image_batch = np.expand_dims(image, axis=0)
 
         # Inferensi PSPNet
-        with torch.no_grad():
+        with torch.autograd.no_grad():
             _, OutLbDict = Net.forward(
                 Images=image_batch,
-                TrainMode=False,
-                UseGPU=UseGPU,
                 FreezeBatchNormStatistics=FreezeBatchNormStatistics,
             )
 

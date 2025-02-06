@@ -41,6 +41,7 @@ class Net(nn.Module):
                 nn.Conv2d(512, 256, stride=1, kernel_size=1, padding=0, bias=False),
                 nn.BatchNorm2d(256),
                 nn.ReLU()))
+
             self.SkipConnections.append(nn.Sequential(
                 nn.Conv2d(256, 256, stride=1, kernel_size=1, padding=0, bias=False),
                 nn.BatchNorm2d(256),
@@ -70,27 +71,19 @@ class Net(nn.Module):
                     self.OutLayersList.append(self.OutLayersDict[nm])
 
 ##########################################Run inference################################################################################################################
-    def forward(self,Images,UseGPU=True,TrainMode=True, FreezeBatchNormStatistics=True):
-
+    def forward(self,Images, FreezeBatchNormStatistics=True):
 #----------------------Convert image to pytorch and normalize values-----------------------------------------------------------------
                 RGBMean = [123.68,116.779,103.939]
                 RGBStd = [65,65,65]
-                if TrainMode:
-                        tp=torch.FloatTensor
-                else:
-                    self.half()
-                    tp=torch.HalfTensor
-                   # self.eval()
+                self.half()
+                tp=torch.HalfTensor
+                # self.eval()
                 InpImages = torch.autograd.Variable(torch.from_numpy(Images.astype(float)), requires_grad=False).transpose(2,3).transpose(1, 2).type(tp)
                 if FreezeBatchNormStatistics==True: self.eval()
-#---------------Convert to cuda gpu or CPU -------------------------------------------------------------------------------------------------------------------
-                if UseGPU:
-                    InpImages=InpImages.cuda()
-                    self.cuda()
-                else:
-                    self=self.cpu()
-                    self.float()
-                    InpImages=InpImages.type(torch.float).cpu()
+#---------------Convert to CPU -------------------------------------------------------------------------------------------------------------------
+                self=self.cpu()
+                self.float()
+                InpImages=InpImages.type(torch.float).cpu()
 #----------------Normalize image values-----------------------------------------------------------------------------------------------------------
                 for i in range(len(RGBMean)): InpImages[:, i, :, :]=(InpImages[:, i, :, :]-RGBMean[i])/RGBStd[i] # normalize image values
                 x=InpImages
