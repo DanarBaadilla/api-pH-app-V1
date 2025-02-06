@@ -632,10 +632,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "namaLarutan": {
+                  "name": {
                     "type": "string"
                   },
-                  "deskripsi": {
+                  "description": {
                     "type": "string"
                   }
                 }
@@ -928,11 +928,11 @@
             "type": "string",
             "example": "38Jnb44v99pT9W9d0bcy"
           },
-          "namaLarutan": {
+          "name": {
             "type": "string",
             "example": "larutan buffer"
           },
-          "ph": {
+          "pH": {
             "type": "integer",
             "example": 2
           },
@@ -941,7 +941,7 @@
             "example": "16/1/2025"
           }
         },
-        "required": ["historyId", "namaLarutan", "ph", "tanggal"]
+        "required": ["historyId", "name", "pH", "tanggal"]
       },
       "HistoryResponse": {
         "type": "object",
@@ -962,11 +962,11 @@
             "type": "string",
             "example": "h001"
           },
-          "namaLarutan": {
+          "name": {
             "type": "string",
             "example": "larutan buffer"
           },
-          "ph": {
+          "pH": {
             "type": "integer",
             "example": 2
           },
@@ -978,18 +978,18 @@
             "type": "string",
             "example": "example.com"
           },
-          "deskripsi": {
+          "description": {
             "type": "string",
             "example": "larutan yang sudah diketahui pH nya"
           }
         },
         "required": [
           "historyId",
-          "namaLarutan",
-          "ph",
+          "name",
+          "pH",
           "tanggal",
           "urlGambar",
-          "deskripsi"
+          "description"
         ]
       },
       "PredictRequest": {
