@@ -868,21 +868,29 @@
             "type": "string",
             "example": "A01"
           },
+          "description": {
+            "type": "string",
+            "example": "apakah anda tau bahwa pH dari sebuah air sumur...."
+          },
           "judulArtikel": {
             "type": "string",
-            "example": "asjdjasd"
+            "example": "Pentingnya mengukur pH air sumur"
           },
-          "teksArtikel": {
+          "sumberArtikel": {
             "type": "string",
-            "example": "asdasvascvas"
+            "example": "sumber : Kompas.com - andi setiawan"
+          },
+          "tanggal": {
+            "type": "string",
+            "example": "20/10/2024"
           },
           "urlArtikel": {
             "type": "string",
-            "example": "asdasdasdas"
+            "example": "www.com"
           },
-          "urlGambarArtikel": {
+          "urlGambar": {
             "type": "string",
-            "example": "adasdsas"
+            "example": "www.com"
           }
         }
       },
