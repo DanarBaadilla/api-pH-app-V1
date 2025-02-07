@@ -12,7 +12,12 @@ def get_banner():
         banners_data = []
 
         for result in results:
-            banner_data = result.to_dict()
+            banner_dict = result.to_dict()
+            # Ambil hanya bannerId dan urlBanner
+            banner_data = {
+                "bannerId": banner_dict.get("bannerId"),
+                "urlBanner": banner_dict.get("urlBanner")
+            }
             banners_data.append(banner_data)
 
         # Return response JSON  
@@ -21,6 +26,7 @@ def get_banner():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 def get_articles():
     try:
