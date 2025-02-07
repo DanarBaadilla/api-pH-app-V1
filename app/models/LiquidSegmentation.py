@@ -1,25 +1,25 @@
 import torch
 import numpy as np
-#import PSPNet_Architecture as PSPNet  # Class Arsitektur Model
-from app.models import PSPNet_Architecture as PSPNet
-#import CategoryDictionary as CatDic
+from app.models import PSPNet_Architecture as PSPNet  # Class Arsitektur Model
 from app.models import CategoryDictionary as CatDic
 import cv2
 
 # Path model PSPNet
-Trained_model_path = "app/models/TrainedModel/PSPNet_Semantic_Segmentation.pt"
+Trained_model_path = "app/models/TrainedModel/PSPNet_Semantic_Segmentation_weights.pth"
 
 FreezeBatchNormStatistics = True  # Freeze statistik batch normalisasi untuk inferensi
 
 # Inisialisasi model PSPNet
-# Pertama, buat instance dari arsitektur model
-Net = PSPNet.Net(CatDic.CatNum)
+Net = PSPNet.Net(CatDic.CatNum)  # Pastikan ini sesuai dengan arsitektur PSPNet yang digunakan
 
-# Kemudian, load state dict dari file .pt ke dalam model
-state_dict = torch.load(Trained_model_path, map_location=torch.device('cpu'))
+# Load state_dict dari file .pth dengan weights_only=True
+state_dict = torch.load(Trained_model_path, map_location=torch.device('cpu'), weights_only=True)
 
-Net.load_state_dict(state_dict)
-Net.eval()  # Set model ke mode evaluasi
+# Load state_dict ke model
+Net.load_state_dict(state_dict, strict=False)  # strict=False jika ada perbedaan minor dalam keys
+
+# Set model ke mode evaluasi
+Net.eval()
 
 # Fungsi untuk mendapatkan mask terbesar
 def get_largest_mask(mask):
