@@ -7,7 +7,7 @@ from app.models import CategoryDictionary as CatDic
 import cv2
 
 # Path model PSPNet
-Trained_model_path = "app/models/TrainedModel/PSPNet_Semantic_Segmentation.torch"
+Trained_model_path = "app/models/TrainedModel/PSPNet_Semantic_Segmentation.pt"
 
 FreezeBatchNormStatistics = True  # Freeze statistik batch normalisasi untuk inferensi
 
