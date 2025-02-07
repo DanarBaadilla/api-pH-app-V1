@@ -808,14 +808,6 @@
             "type": "string",
             "example": "B001"
           },
-          "judulBanner": {
-            "type": "string",
-            "example": "Penting nya pH"
-          },
-          "teksBanner": {
-            "type": "string",
-            "example": "example example example"
-          },
           "urlBanner": {
             "type": "string",
             "example": "examplebanner.com"
@@ -840,13 +832,17 @@
             "type": "string",
             "example": "S01"
           },
+          "namaToko": {
+            "type": "string",
+            "example": "Galleo official"
+          },
           "urlGambarToko": {
             "type": "string",
-            "example": "asdasdassa"
+            "example": "www.com"
           },
           "urlToko": {
             "type": "string",
-            "example": "asdada"
+            "example": "www.com"
           }
         }
       },
