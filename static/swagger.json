@@ -828,21 +828,37 @@
       "Store": {
         "type": "object",
         "properties": {
-          "storeId": {
+          "hargaProduk": {
             "type": "string",
-            "example": "S01"
+            "example": "Rp.16.999"
+          },
+          "judulProduk": {
+            "type": "string",
+            "example": "bunga telang 10 gr"
           },
           "namaToko": {
             "type": "string",
             "example": "Galleo official"
           },
-          "urlGambarToko": {
+          "storeId": {
             "type": "string",
-            "example": "www.com"
+            "example": "S01"
+          },
+          "urlGambarProduk": {
+            "type": "string",
+            "example": "https://gambarproduk.png"
+          },
+          "urlLogoToko": {
+            "type": "string",
+            "example": "https://logo.png"
+          },
+          "urlProduk": {
+            "type": "string",
+            "example": "https://produk.png"
           },
           "urlToko": {
             "type": "string",
-            "example": "www.com"
+            "example": "https://toko.com"
           }
         }
       },
