@@ -1,4 +1,5 @@
 import cv2
+import os
 import uuid
 import numpy as np
 from datetime import datetime
@@ -47,6 +48,15 @@ def predict():
         # Validasi tipe file
         if not image_file.mimetype in ['image/jpeg', 'image/png']:
             return jsonify({"error": "Invalid file type. Only JPG, JPEG, and PNG are allowed."}), 400
+
+        # validasi ukuran file maksimal 5MB
+        MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB dalam byte
+        image_file.seek(0, os.SEEK_END)  # Pindah ke akhir file untuk cek ukuran
+        file_size = image_file.tell()  # Dapatkan ukuran file
+        image_file.seek(0)  # Kembalikan ke awal agar bisa dibaca lagi
+
+        if file_size > MAX_FILE_SIZE:
+            return jsonify({"error": "File size exceeds 5MB. Please upload a smaller image."}), 400
 
         # Baca data gambar
         image_data = image_file.read()
@@ -99,6 +109,7 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 def get_example_photo():
     try:
