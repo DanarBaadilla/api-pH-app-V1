@@ -130,3 +130,4 @@ def get_example_photo():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
