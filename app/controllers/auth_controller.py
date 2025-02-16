@@ -4,6 +4,9 @@ from app.config.config import db
 from datetime import datetime
 from app.models.user_token import generate_token
 
+def activate_server():
+    return jsonify({"message": "Server sudah aktif"}), 200
+
 def register_guest():
     # Generate userId menggunakan UUID
     userId = str(uuid4())
