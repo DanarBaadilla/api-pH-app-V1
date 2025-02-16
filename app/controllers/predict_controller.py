@@ -65,9 +65,6 @@ def predict():
         file_extension = image_file.filename.rsplit('.', 1)[-1].lower()
         filename = f"user/{userId}/{uuid.uuid4().hex}.{file_extension}"
 
-        # Upload gambar ke GCS
-        image_url = upload_image_to_gcs(image_data, filename, image_file.mimetype)
-
         # Load image ke dalam numpy array untuk diproses
         np_img = np.frombuffer(image_data, np.uint8)
         image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
@@ -77,14 +74,30 @@ def predict():
         if segmented_image is None:
             return jsonify({"error": "Segmentation failed or no liquid detected."}), 400
 
+        # Upload gambar ke GCS
+        image_url = upload_image_to_gcs(image_data, filename, image_file.mimetype)
+
         # Klasifikasi nilai pH
         predicted_ph = classify_ph(segmented_image)
 
-        # Generate unique history ID
+        # Cari nilai historyId terbesar yang ada di Firestore
         user_ref = db.collection('user').document(userId)
         history_ref = user_ref.collection('history')
-        history_count = len(history_ref.get())
-        history_id = f"h{history_count + 1:03d}"
+
+        existing_histories = history_ref.stream()
+        max_id = 0  # Default jika belum ada history
+
+        for doc in existing_histories:
+            doc_id = doc.id  # Ambil historyId dari Firestore
+            if doc_id.startswith("h"):
+                try:
+                    numeric_part = int(doc_id[1:])  # Ambil angka setelah "h"
+                    max_id = max(max_id, numeric_part)  # Cari angka terbesar
+                except ValueError:
+                    continue  # Skip jika format salah
+
+        # Generate history ID berikutnya
+        history_id = f"h{max_id + 1:03d}"
 
         # Simpan data ke Firestore
         history_ref.document(history_id).set({
