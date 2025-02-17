@@ -82,18 +82,18 @@ def predict():
 
         # Tentukan judul pH berdasarkan predicted_ph
         ph_titles = {
-            2: "pH 2 - Asam Kuat",
-            3: "pH 3 - Asam Kuat",
-            4: "pH 4 - Asam Lemah",
-            5: "pH 5 - Asam Lemah",
-            6: "pH 6 - Hampir Netral",
-            7: "pH 7 - Netral",
-            8: "pH 8 - Basa Lemah",
-            9: "pH 9 - Basa Lemah",
-            10: "pH 10 - Basa Kuat",
-            11: "pH 11 - Basa Kuat",
-            12: "pH 12 - Basa Ekstrem",
-            13: "pH 13 - Basa Ekstrem"
+            "2": "pH 2 - Asam Kuat",
+            "3": "pH 3 - Asam Kuat",
+            "4": "pH 4 - Asam Lemah",
+            "5": "pH 5 - Asam Lemah",
+            "6": "pH 6 - Hampir Netral",
+            "7": "pH 7 - Netral",
+            "8": "pH 8 - Basa Lemah",
+            "9": "pH 9 - Basa Lemah",
+            "10": "pH 10 - Basa Kuat",
+            "11": "pH 11 - Basa Kuat",
+            "12": "pH 12 - Basa Ekstrem",
+            "13": "pH 13 - Basa Ekstrem"
         }
         judulPH = ph_titles.get(predicted_ph, f"pH {predicted_ph} - Tidak Diketahui")
 
