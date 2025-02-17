@@ -80,32 +80,17 @@ def predict():
         # Klasifikasi nilai pH
         predicted_ph = classify_ph(segmented_image)
 
-        # Tentukan judul pH berdasarkan predicted_ph
-        ph_titles = {
-            "2": "pH 2 - Asam Kuat",
-            "3": "pH 3 - Asam Kuat",
-            "4": "pH 4 - Asam Lemah",
-            "5": "pH 5 - Asam Lemah",
-            "6": "pH 6 - Hampir Netral",
-            "7": "pH 7 - Netral",
-            "8": "pH 8 - Basa Lemah",
-            "9": "pH 9 - Basa Lemah",
-            "10": "pH 10 - Basa Kuat",
-            "11": "pH 11 - Basa Kuat",
-            "12": "pH 12 - Basa Ekstrem",
-            "13": "pH 13 - Basa Ekstrem"
-        }
-        judulPH = ph_titles.get(predicted_ph, f"pH {predicted_ph} - Tidak Diketahui")
-
         # Ambil informasi tambahan dari koleksi "information" berdasarkan predicted_ph
         info_data = db.collection('information').document(str(predicted_ph)).get()
 
         if info_data.exists:
             info = info_data.to_dict().get('info', None)
             hex_color = info_data.to_dict().get('hex', None)
+            judulPH = info_data.to_dict().get('judulPH', None)
         else:
             info = None
             hex_color = None
+            judulPH = None
 
         # Cari nilai historyId terbesar yang ada di Firestore
         user_ref = db.collection('user').document(userId)

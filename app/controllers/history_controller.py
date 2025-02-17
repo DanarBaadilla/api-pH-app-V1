@@ -67,6 +67,7 @@ def get_detail_history(historyId):
             info_data = info_doc.to_dict()
             history_data["info"] = info_data.get("info", "No information available")
             history_data["hex"] = info_data.get("hex", "#000000")  # Default hitam jika tidak ada
+            history_data["judulPH"] = info_data.get("judulPH", None)
 
         # Respon JSON dengan data lengkap
         return jsonify(history_data), 200
