@@ -54,11 +54,26 @@ def get_detail_history(historyId):
         if not history_doc.exists:
             return jsonify({"error": "History not found"}), 404
 
-        # Respon detail dokumen
-        return jsonify(history_doc.to_dict()), 200
+        # Ambil data dari dokumen history
+        history_data = history_doc.to_dict()
+        predicted_ph = history_data.get("pH")
+
+        # Ambil dokumen dari koleksi 'information' berdasarkan pH
+        info_ref = db.collection('information').document(str(predicted_ph))
+        info_doc = info_ref.get()
+
+        # Jika dokumen informasi tersedia, tambahkan ke respons
+        if info_doc.exists:
+            info_data = info_doc.to_dict()
+            history_data["info"] = info_data.get("info", "No information available")
+            history_data["hex"] = info_data.get("hex", "#000000")  # Default hitam jika tidak ada
+
+        # Respon JSON dengan data lengkap
+        return jsonify(history_data), 200
 
     except Exception as e:
         return jsonify({"error": "Failed to fetch history detail", "details": str(e)}), 500
+
 
 
 def update_history(historyId):

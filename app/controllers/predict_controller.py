@@ -49,7 +49,7 @@ def predict():
         if not image_file.mimetype in ['image/jpeg', 'image/png']:
             return jsonify({"error": "Invalid file type. Only JPG, JPEG, and PNG are allowed."}), 400
 
-        # validasi ukuran file maksimal 5MB
+        # Validasi ukuran file maksimal 5MB
         MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB dalam byte
         image_file.seek(0, os.SEEK_END)  # Pindah ke akhir file untuk cek ukuran
         file_size = image_file.tell()  # Dapatkan ukuran file
@@ -80,6 +80,33 @@ def predict():
         # Klasifikasi nilai pH
         predicted_ph = classify_ph(segmented_image)
 
+        # Tentukan judul pH berdasarkan predicted_ph
+        ph_titles = {
+            2: "pH 2 - Asam Kuat",
+            3: "pH 3 - Asam Kuat",
+            4: "pH 4 - Asam Lemah",
+            5: "pH 5 - Asam Lemah",
+            6: "pH 6 - Hampir Netral",
+            7: "pH 7 - Netral",
+            8: "pH 8 - Basa Lemah",
+            9: "pH 9 - Basa Lemah",
+            10: "pH 10 - Basa Kuat",
+            11: "pH 11 - Basa Kuat",
+            12: "pH 12 - Basa Ekstrem",
+            13: "pH 13 - Basa Ekstrem"
+        }
+        judulPH = ph_titles.get(predicted_ph, f"pH {predicted_ph} - Tidak Diketahui")
+
+        # Ambil informasi tambahan dari koleksi "information" berdasarkan predicted_ph
+        info_data = db.collection('information').document(str(predicted_ph)).get()
+
+        if info_data.exists:
+            info = info_data.to_dict().get('info', None)
+            hex_color = info_data.to_dict().get('hex', None)
+        else:
+            info = None
+            hex_color = None
+
         # Cari nilai historyId terbesar yang ada di Firestore
         user_ref = db.collection('user').document(userId)
         history_ref = user_ref.collection('history')
@@ -105,6 +132,7 @@ def predict():
             "description": description,  # Bisa None jika tidak diinputkan
             "historyId": history_id,
             "pH": predicted_ph,
+            "judulPH": judulPH,
             "tanggal": datetime.now().strftime("%d/%m/%Y"),
             "urlGambar": image_url  # URL gambar dari GCS
         })
@@ -115,8 +143,11 @@ def predict():
             "description": description,
             "historyId": history_id,
             "pH": predicted_ph,
+            "judulPH": judulPH,
             "tanggal": datetime.now().strftime("%d/%m/%Y"),
-            "urlGambar": image_url
+            "urlGambar": image_url,
+            "info": info,
+            "hex": hex_color
         }
         return jsonify(response), 201
 
