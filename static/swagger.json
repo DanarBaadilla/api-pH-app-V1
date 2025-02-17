@@ -978,29 +978,51 @@
       "HistoryDetailResponse": {
         "type": "object",
         "properties": {
-          "historyId": {
-            "type": "string",
-            "example": "h001"
-          },
           "name": {
             "type": "string",
-            "example": "larutan buffer"
-          },
-          "pH": {
-            "type": "integer",
-            "example": 2
-          },
-          "tanggal": {
-            "type": "string",
-            "example": "16/1/2025"
-          },
-          "urlGambar": {
-            "type": "string",
-            "example": "example.com"
+            "description": "solution / liquid name.",
+            "example": "larutan b-R robinson"
           },
           "description": {
             "type": "string",
-            "example": "larutan yang sudah diketahui pH nya"
+            "description": "solution / liquid description (null if there is no input).",
+            "example": "larutan untuk membuat buffer"
+          },
+          "historyId": {
+            "type": "string",
+            "description": "Predict UID.",
+            "example": "h010"
+          },
+          "pH": {
+            "type": "string",
+            "description": "pH Value.",
+            "example": "9"
+          },
+          "judulPH": {
+            "type": "string",
+            "description": "pH Value that used in UI Android",
+            "example": "pH 11 - Basa Kuat"
+          },
+          "tanggal": {
+            "type": "string",
+            "format": "date",
+            "description": "date of prediction.",
+            "example": "20/01/2025"
+          },
+          "urlGambar": {
+            "type": "string",
+            "description": "Uploaded image URL",
+            "example": "https://gambarproduk"
+          },
+          "info": {
+            "type": "string",
+            "description": "pH Value Information",
+            "example": "<p dir=\"ltr\">Larutan dengan <b>pH 11</b> bersifat <b>basa sangat kuat</b> dan memiliki sifat korosif yang lebih tinggi. Contohnya adalah <b>larutan amonia (NH₃)</b> yang digunakan dalam pembersih kaca dan desinfektan. Selain itu, larutan ini sering digunakan dalam <b>proses pembuatan tekstil</b>, serta dalam <b>industri pertanian</b> sebagai bahan tambahan dalam pupuk.</p>"
+          },
+          "hex": {
+            "type": "string",
+            "description": "pH Color",
+            "example": "#ff0000"
           }
         },
         "required": [
@@ -1056,11 +1078,31 @@
             "description": "pH Value.",
             "example": "9"
           },
+          "judulPH": {
+            "type": "string",
+            "description": "pH Value that used in UI Android",
+            "example": "pH 11 - Basa Kuat"
+          },
           "tanggal": {
             "type": "string",
             "format": "date",
             "description": "date of prediction.",
             "example": "20/01/2025"
+          },
+          "urlGambar": {
+            "type": "string",
+            "description": "Uploaded image URL",
+            "example": "https://gambarproduk"
+          },
+          "info": {
+            "type": "string",
+            "description": "pH Value Information",
+            "example": "<p dir=\"ltr\">Larutan dengan <b>pH 11</b> bersifat <b>basa sangat kuat</b> dan memiliki sifat korosif yang lebih tinggi. Contohnya adalah <b>larutan amonia (NH₃)</b> yang digunakan dalam pembersih kaca dan desinfektan. Selain itu, larutan ini sering digunakan dalam <b>proses pembuatan tekstil</b>, serta dalam <b>industri pertanian</b> sebagai bahan tambahan dalam pupuk.</p>"
+          },
+          "hex": {
+            "type": "string",
+            "description": "pH Color",
+            "example": "#ff0000"
           }
         }
       },
