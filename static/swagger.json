@@ -32,6 +32,25 @@
     }
   ],
   "paths": {
+    "/server": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Cek status server",
+        "description": "Mengembalikan pesan bahwa server sudah aktif.",
+        "responses": {
+          "200": {
+            "description": "Server aktif",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Server sudah aktif"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/registerGuest": {
       "post": {
         "tags": ["Auth"],
