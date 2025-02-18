@@ -61,10 +61,6 @@ def predict():
         # Baca data gambar
         image_data = image_file.read()
 
-        # Generate nama file unik dalam folder user di GCS
-        file_extension = image_file.filename.rsplit('.', 1)[-1].lower()
-        filename = f"user/{userId}/{uuid.uuid4().hex}.{file_extension}"
-
         # Load image ke dalam numpy array untuk diproses
         np_img = np.frombuffer(image_data, np.uint8)
         image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
@@ -73,6 +69,10 @@ def predict():
         segmented_image = segment_image(image)
         if segmented_image is None:
             return jsonify({"error": "Segmentation failed or no liquid detected."}), 400
+
+        # Generate nama file unik dalam folder user di GCS
+        file_extension = image_file.filename.rsplit('.', 1)[-1].lower()
+        filename = f"user/{userId}/{uuid.uuid4().hex}.{file_extension}"
 
         # Upload gambar ke GCS
         image_url = upload_image_to_gcs(image_data, filename, image_file.mimetype)
@@ -87,10 +87,6 @@ def predict():
             info = info_data.to_dict().get('info', None)
             hex_color = info_data.to_dict().get('hex', None)
             judulPH = info_data.to_dict().get('judulPH', None)
-        else:
-            info = None
-            hex_color = None
-            judulPH = None
 
         # Cari nilai historyId terbesar yang ada di Firestore
         user_ref = db.collection('user').document(userId)
