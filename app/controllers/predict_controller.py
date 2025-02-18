@@ -113,7 +113,6 @@ def predict():
             "description": description,  # Bisa None jika tidak diinputkan
             "historyId": history_id,
             "pH": predicted_ph,
-            "judulPH": judulPH,
             "tanggal": datetime.now().strftime("%d/%m/%Y"),
             "urlGambar": image_url  # URL gambar dari GCS
         })
