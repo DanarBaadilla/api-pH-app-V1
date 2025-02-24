@@ -4,7 +4,7 @@ from keras.preprocessing import image
 from keras.models import load_model
 
 # Load model CNN yang sudah diperbarui
-model = load_model('app\models\TrainedModel\best_CNN_pH_prediciton_model_valACC92.h5')
+model = load_model('app/models/TrainedModel/best_CNN_pH_prediciton_model_valACC92.h5')
 
 # Daftar label kelas (pH values)
 class_list = ['10', '11', '12', '13', '2', '3', '4', '5', '6', '7', '8', '9']
