@@ -67,6 +67,7 @@ def segment_image(image):
                     segmented_object = cv2.bitwise_and(
                         cropped_image, cropped_image, mask=cropped_mask
                     )
+                    segmented_object = cv2.resize(segmented_object, (227, 227), interpolation=cv2.INTER_AREA)
                     return segmented_object
         return None
     except Exception as e:
