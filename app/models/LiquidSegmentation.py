@@ -25,7 +25,7 @@ Net.eval()
 def get_largest_mask(mask):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if len(contours) == 0:
-        return None  # Tidak ada kontur ditemukan
+        return None
     largest_contour = max(contours, key=cv2.contourArea)
     largest_mask = np.zeros_like(mask)
     cv2.drawContours(largest_mask, [largest_contour], -1, 255, thickness=cv2.FILLED)
@@ -35,8 +35,8 @@ def get_largest_mask(mask):
 def segment_image(image):
     try:
         # Resize jika gambar lebih besar dari 840x840
-        h, w, d = image.shape
-        max_size = max(h, w)
+        h, w, _ = image.shape
+        max_size = np.max([h, w])
         if max_size > 840:
             resize_factor = 840 / max_size
             image = cv2.resize(image, (int(w * resize_factor), int(h * resize_factor)))
@@ -45,7 +45,7 @@ def segment_image(image):
         image_batch = np.expand_dims(image, axis=0)
 
         # Inferensi PSPNet
-        with torch.autograd.no_grad():
+        with torch.no_grad():
             _, OutLbDict = Net.forward(
                 Images=image_batch,
                 FreezeBatchNormStatistics=FreezeBatchNormStatistics,
@@ -59,15 +59,16 @@ def segment_image(image):
                 largest_mask, largest_contour = get_largest_mask(mask)
                 if largest_mask is not None:
                     # Ambil bounding box dan crop gambar
-                    x, y, w, h = cv2.boundingRect(largest_contour)
-                    cropped_image = image[y : y + h, x : x + w]
-                    cropped_mask = largest_mask[y : y + h, x : x + w]
+                    x, y, w_box, h_box = cv2.boundingRect(largest_contour)
+                    cropped_image = image[y:y + h_box, x:x + w_box]
+                    cropped_mask  = largest_mask[y:y + h_box, x:x + w_box]
 
                     # Segmentasi objek berdasarkan mask
                     segmented_object = cv2.bitwise_and(
                         cropped_image, cropped_image, mask=cropped_mask
                     )
-                    segmented_object = cv2.resize(segmented_object, (227, 227), interpolation=cv2.INTER_AREA)
+                    #konversi ke RGB
+                    segmented_object = cv2.cvtColor(segmented_object, cv2.COLOR_BGR2RGB)
                     return segmented_object
         return None
     except Exception as e:

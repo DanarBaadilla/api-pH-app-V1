@@ -1,5 +1,4 @@
 import cv2
-import io
 import os
 import uuid
 import numpy as np
@@ -10,7 +9,6 @@ from flask_jwt_extended import get_jwt_identity
 from app.models.LiquidSegmentation import segment_image
 from app.models.pH_Classification import classify_ph
 from app.config.config import GCS_BUCKET_NAME, GCS_BASE_URL, storage_client
-from keras._tf_keras.keras.preprocessing import image
 
 def upload_image_to_gcs(image_data, filename, content_type):
     """Mengunggah file ke Google Cloud Storage dan mengembalikan URL publiknya."""
@@ -59,16 +57,15 @@ def predict():
         if file_size > MAX_FILE_SIZE:
             return jsonify({"error": "File size exceeds 5MB. Please upload a smaller image."}), 400
 
-        # Baca data gambar sebagai bytes
-        image_bytes = io.BytesIO(image_file.read())
-        image_file.seek(0)
-        image_data = image.load_img(image_bytes, color_mode='rgb' )
+        # Baca data gambar
+        image_data = image_file.read()
 
         # Load image ke dalam numpy array untuk diproses
-        img_array = image.img_to_array(image_data)
+        np_img = np.frombuffer(image_data, np.uint8)
+        image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
         # Segmentasi gambar
-        segmented_image = segment_image(img_array)
+        segmented_image = segment_image(image)
         if segmented_image is None:
             return jsonify({"error": "Segmentation failed or no liquid detected."}), 400
 
@@ -77,9 +74,7 @@ def predict():
         filename = f"user/{userId}/{uuid.uuid4().hex}.{file_extension}"
 
         # Upload gambar ke GCS
-        image_upload = image_file.read()
-        image_file.seek(0)  # Reset pointer file
-        image_url = upload_image_to_gcs(image_upload, filename, image_file.mimetype)
+        image_url = upload_image_to_gcs(image_data, filename, image_file.mimetype)
 
         # Klasifikasi nilai pH
         predicted_ph = classify_ph(segmented_image)
