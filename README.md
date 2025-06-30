@@ -2,7 +2,7 @@
 
 ## Introduction
 
-API-PH-APP-V1 is a RESTful API built using Flask for CRUD operations and deep learning model triggering (including PSPNet semantic segmentation and CNN Classification). It provides functionalities for managing data with a Flask-based backend, and integrates deep learning model capabilities. This is the backend application server for PH APP
+API-PH-APP-V1 is a RESTful API built using Flask for CRUD operations and deep learning model triggering (including PSPNet semantic segmentation and CNN Classification). It provides functionalities for managing data with a Flask-based backend, and integrates deep learning model capabilities. This is the backend application server for PH APP. the deployment will expired at 12 July 2025
 
 ## Technologies
 
